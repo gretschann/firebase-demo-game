@@ -64,6 +64,7 @@ function App() {
   const [berlin, setBerlin] = useState(0);
   const [frankfurt, setFrankfurt] = useState(0);
   const [duesseldorf, setDuesseldorf] = useState(0);
+  const [side, setSide] = useState(0);
 
   useEffect(() => {
     // sign in
@@ -84,8 +85,13 @@ function App() {
     });
   }, []);
 
+  //choose side
   useEffect(() => {
-    console.log("munich ");
+    console.log("uid", uid);
+    if (uid) setSide(Math.floor(parseInt(uid.substr(0, 1), 36) / 12));
+  }, [uid]);
+
+  useEffect(() => {
     setBerlin(
       cities.filter((x) => {
         return x.i === 0;
@@ -112,7 +118,7 @@ function App() {
     await addDoc(collection(db, "game"), {
       uid,
       time: serverTimestamp(),
-      side: 1,
+      side: side,
       i: i,
     });
   }
@@ -120,13 +126,12 @@ function App() {
   return (
     <div className="App">
       <h1>Hello, {uid}</h1>
+      <h2>Your team {side}</h2>
       <div>
-        munich {munich}
-        {citiesList.map((city, index) => (
-          <div key={index} onClick={() => makeMove(index)}>
-            {city.icon} {city.name}
-          </div>
-        ))}
+        <div onClick={() => makeMove(0)}>berlin {berlin}</div>
+        <div onClick={() => makeMove(1)}>munich {munich}</div>
+        <div onClick={() => makeMove(2)}>frankfurt {frankfurt}</div>
+        <div onClick={() => makeMove(3)}>düsseldorf{duesseldorf}</div>
       </div>
     </div>
   );
